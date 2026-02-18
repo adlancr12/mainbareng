@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MainBareng - Sikat Slotnya!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --accent: #6366f1;
+            --padel: #f59e0b;
+            --badminton: #10b981;
+            --tennis: #3b82f6;
+            --dark: #0f172a;
+            --slate: #64748b;
+            --bg: #f8fafc;
+        }
+
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body { margin: 0; background: #1e293b; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+
+        .phone-container {
+            width: 390px; height: 844px; background: var(--bg); border-radius: 48px;
+            overflow: hidden; position: relative; border: 10px solid #000; box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);
+        }
+
+        /* --- Header --- */
+        .app-bar { padding: 50px 24px 10px; display: flex; justify-content: space-between; align-items: center; }
+        .user-pill { background: white; padding: 6px 16px; border-radius: 100px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; font-size: 13px; }
+
+        .content { padding: 0 24px 120px; height: calc(100% - 80px); overflow-y: auto; }
+
+        h2.section-title { font-size: 26px; font-weight: 800; margin: 20px 0; color: var(--dark); letter-spacing: -1px; }
+
+        /* --- Bento Card & Categories --- */
+        .bento-card {
+            background: white; border-radius: 28px; padding: 20px; margin-bottom: 16px;
+            border: 1px solid rgba(0,0,0,0.02); box-shadow: 0 8px 24px rgba(0,0,0,0.04); cursor: pointer;
+        }
+
+        .category-tag { padding: 5px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; color: white; margin-bottom: 10px; display: inline-block; }
+        .tag-padel { background: var(--padel); }
+        .tag-badminton { background: var(--badminton); }
+        .tag-tennis { background: var(--tennis); }
+
+        .match-name { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: var(--dark); }
+        .match-info { font-size: 13px; color: var(--slate); margin-bottom: 15px; }
+
+        /* --- Slot System --- */
+        .slot-section { margin: 20px 0; }
+        .slot-title { font-size: 12px; font-weight: 700; color: var(--slate); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .circle-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 25px; }
+        .circle-slot { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; position: relative; }
+        .circle-slot.filled { border: 2px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); background-size: cover; }
+        .circle-slot.empty { border: 2px dashed #cbd5e1; background: #f1f5f9; color: #94a3b8; font-size: 16px; }
+        .name-label { position: absolute; bottom: -18px; font-size: 9px; white-space: nowrap; color: var(--dark); }
+
+        /* --- Payment Sheet --- */
+        .payment-overlay { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.4); z-index: 100; display: none; }
+        .payment-sheet {
+            position: absolute; bottom: -100%; left: 0; right: 0; background: white; border-top-left-radius: 40px; border-top-right-radius: 40px;
+            padding: 32px 24px; z-index: 101; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .payment-sheet.active { bottom: 0; }
+
+        .payment-option {
+            display: flex; align-items: center; padding: 18px; border-radius: 20px; margin-bottom: 12px; border: 2px solid #f1f5f9; cursor: pointer; position: relative;
+        }
+        .payment-option.selected { border-color: var(--accent); background: #f5f7ff; }
+
+        .promo-badge { position: absolute; top: 12px; right: 12px; background: #fbbf24; color: #78350f; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 6px; }
+
+        .pay-btn { background: var(--dark); color: white; width: 100%; padding: 20px; border-radius: 22px; border: none; font-weight: 700; cursor: pointer; margin-top: 15px; font-size: 15px; }
+
+        /* --- Navigation --- */
+        .nav-bar { position: absolute; bottom: 24px; left: 24px; right: 24px; height: 70px; background: var(--dark); border-radius: 24px; display: flex; justify-content: space-around; align-items: center; z-index: 50; }
+        .nav-item { color: rgba(255,255,255,0.4); font-size: 20px; }
+        .nav-item.active { color: white; }
+
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="phone-container">
+    <div class="app-bar">
+        <div class="user-pill">
+            <img src="https://i.pravatar.cc/150?u=alex" width="24" style="border-radius: 50%">
+            <span>Yo, Adlan!</span>
+        </div>
+        <div style="font-size: 20px;">🔔</div>
+    </div>
+
+    <div class="content">
+        <div id="homeView">
+            <h2 class="section-title">Gas Main <br>Bareng! 🔥</h2>
+            
+            <div class="bento-card" onclick="openDetail('Padel Pro Jakarta', 150000, 2, 4, 'padel')">
+                <span class="category-tag tag-padel">PADEL</span>
+                <div class="match-name">Padel Pro Jakarta</div>
+                <div class="match-info">📍 SCBD Padel Court • 19:00</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <b style="color:var(--padel); font-size:13px;">2/4 Slot terisi</b>
+                    <b style="font-size:15px;">Rp 150k</b>
+                </div>
+            </div>
+
+            <div class="bento-card" onclick="openDetail('Mabar Badminton', 45000, 6, 10, 'badminton')">
+                <span class="category-tag tag-badminton">BADMINTON</span>
+                <div class="match-name">Mabar Badminton Fun</div>
+                <div class="match-info">📍 GOR Bulungan • 20:00</div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <b style="color:var(--badminton); font-size:13px;">6/10 Slot terisi</b>
+                    <b style="font-size:15px;">Rp 45k</b>
+                </div>
+            </div>
+        </div>
+
+        <div id="detailView" class="hidden fade-in">
+            <button onclick="goBack()" style="background:none; border:none; font-weight:800; margin: 15px 0; cursor:pointer; color:var(--dark)">← KEMBALI</button>
+            <h2 id="detTitle" style="margin:0; font-size:28px;"></h2>
+            <p id="detLoc" class="match-info"></p>
+
+            <div class="slot-section">
+                <div class="slot-title">Squad Sekarang</div>
+                <div id="filledGrid" class="circle-grid"></div>
+
+                <div class="slot-title" style="margin-top:30px;">Slot Kosong (Sikat!)</div>
+                <div id="emptyGrid" class="circle-grid"></div>
+            </div>
+
+            <button class="pay-btn" style="background:var(--accent); font-size:16px; margin-top:20px;" onclick="openPaymentSheet()">AMBIL SLOT SEKARANG</button>
+        </div>
+
+        <div id="successView" class="hidden fade-in" style="text-align: center; padding-top: 60px;">
+            <div style="font-size: 80px;">⚡</div>
+            <h2 style="font-weight: 800; font-size:32px;">GASKEUN!</h2>
+            <p style="color:var(--slate)">Slot aman. Sampai ketemu di lapangan!</p>
+            <button class="pay-btn" onclick="location.reload()">MANTAP</button>
+        </div>
+    </div>
+
+    <div class="payment-overlay" id="overlay" onclick="closePaymentSheet()"></div>
+    <div class="payment-sheet" id="sheet">
+        <div style="width:40px; height:5px; background:#e2e8f0; border-radius:10px; margin: 0 auto 20px;"></div>
+        <h3 style="margin-bottom: 20px; font-weight: 800;">Bayar Pakai Apa?</h3>
+        
+        <div class="payment-option" onclick="selectMethod(this, 'E-Wallet')">
+            <span style="font-size:20px; margin-right:12px;">📱</span>
+            <div style="flex:1"><b>E-Wallet</b><br><small>OVO, DANA, GoPay</small></div>
+        </div>
+
+        <div class="payment-option" onclick="selectMethod(this, 'Virtual Account')">
+            <span style="font-size:20px; margin-right:12px;">🏦</span>
+            <div style="flex:1"><b>Virtual Account</b><br><small>BCA, Mandiri, BNI</small></div>
+        </div>
+
+        <div class="payment-option" onclick="selectMethod(this, 'PayLater')">
+            <span class="promo-badge">PROMO 0%</span>
+            <span style="font-size:20px; margin-right:12px;">⏳</span>
+            <div style="flex:1">
+                <b>PayLater</b><br>
+                <small style="color: var(--accent); font-weight: 600;">Buat kamu yang kebelet main tapi ga punya uang.</small>
+            </div>
+        </div>
+
+        <button class="pay-btn" onclick="confirmPayment()">KONFIRMASI BAYAR</button>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active">🏠</div>
+        <div class="nav-item">🧭</div>
+        <div class="nav-item">💬</div>
+        <div class="nav-item">👤</div>
+    </div>
+</div>
+
+<script>
+    let selectedMethod = "";
+
+    function openDetail(title, price, joined, total, type) {
+        document.getElementById('homeView').classList.add('hidden');
+        document.getElementById('detailView').classList.remove('hidden');
+        document.getElementById('detTitle').innerText = title;
+        document.getElementById('detLoc').innerText = "📍 Terverifikasi • " + type.toUpperCase();
+
+        const filledGrid = document.getElementById('filledGrid');
+        const emptyGrid = document.getElementById('emptyGrid');
+        const names = ["Andi", "Budi", "Citra", "Dedi", "Eka", "Fani", "Gia", "Hana", "Ivan", "Juna"];
+
+        filledGrid.innerHTML = "";
+        emptyGrid.innerHTML = "";
+
+        for(let i=0; i<joined; i++) {
+            const slot = document.createElement('div');
+            slot.className = "circle-slot filled";
+            slot.style.backgroundImage = `url('https://i.pravatar.cc/150?u=${i + title}')`;
+            const label = document.createElement('span');
+            label.className = "name-label";
+            label.innerText = names[i];
+            slot.appendChild(label);
+            filledGrid.appendChild(slot);
+        }
+
+        for(let i=0; i<(total-joined); i++) {
+            const slot = document.createElement('div');
+            slot.className = "circle-slot empty";
+            slot.innerText = "+";
+            emptyGrid.appendChild(slot);
+        }
+    }
+
+    function openPaymentSheet() {
+        document.getElementById('overlay').style.display = 'block';
+        setTimeout(() => document.getElementById('sheet').classList.add('active'), 10);
+    }
+
+    function closePaymentSheet() {
+        document.getElementById('sheet').classList.remove('active');
+        setTimeout(() => document.getElementById('overlay').style.display = 'none', 400);
+    }
+
+    function selectMethod(el, name) {
+        document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedMethod = name;
+    }
+
+    function confirmPayment() {
+        if(!selectedMethod) return alert("Pilih pembayaran dulu bosku!");
+        closePaymentSheet();
+        document.getElementById('detailView').classList.add('hidden');
+        document.getElementById('successView').classList.remove('hidden');
+    }
+
+    function goBack() {
+        document.getElementById('detailView').classList.add('hidden');
+        document.getElementById('homeView').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
